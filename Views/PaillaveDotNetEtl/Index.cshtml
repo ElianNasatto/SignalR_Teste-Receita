@@ -1,0 +1,86 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<h2>Últimos logs</h2>
+
+<br />
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <td>log</td>
+            </tr>
+        </thead>
+        <tbody id="bodyTable">
+        </tbody>
+    </table>
+</div>
+
+<script>
+    var logs = new Array();
+
+    var connectionLog = new signalR.HubConnectionBuilder().withUrl("/loghub", { transport: signalR.HttpTransportType.LongPolling }).withAutomaticReconnect().build();
+
+    function adicionarLogNaLista(log) {
+
+        logs.push(log);
+        while (logs.length > 8)
+            logs.shift();
+
+        var lista = document.getElementById("bodyTable");
+        lista.innerHTML = '';
+
+
+        logs.map(l => {
+            var linha = document.createElement("tr");
+
+            var dados = l.split(";");
+
+            // Criar uma linha (tr) para cada item no array
+            for (var i = 0; i < dados.length; i++) {
+
+                // Criar uma célula (td) para cada item no array
+                var cellString = document.createElement("td");
+                cellString.textContent = dados[i];
+
+                // Adicionar a célula à linha
+                linha.appendChild(cellString);
+
+
+            }
+
+            lista.appendChild(linha);
+        });
+
+    }
+
+
+    connectionLog.on("EnviarLog", function (lista) {
+        if (Array.isArray(lista)) {
+            lista.map(log => adicionarLogNaLista(log));
+        } else {
+            adicionarLogNaLista(lista);
+        }
+    });
+
+    connectionLog.start().then(function () {
+        connectionLog.invoke("CarregarLogs")
+            .then(function (lista) {
+                if (lista)
+                    lista.map(log => adicionarLogNaLista(log));
+            });
+    });
+
+    connectionLog.onreconnected(function () {
+        connectionLog.invoke("CarregarLogs")
+            .then(function (lista) {
+                lista.map(log => adicionarLogNaLista(log));
+            });
+    });
+
+
+
+</script>
