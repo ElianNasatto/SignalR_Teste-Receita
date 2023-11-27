@@ -1,0 +1,48 @@
+﻿@using AplicationSignalR.Views.Components
+@{
+    ViewData["Title"] = "Download Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<component type="typeof(ProgressBarIntegrada)" render-mode="ServerPrerendered" />
+
+<form class="form card" asp-action="Details" method="get">
+    <div class="card-header">
+        <label class="col-sm-2 col-form-label" for="inputUrl">URL da API</label>
+    </div>
+    <div class="card-body">
+        <input id="inputUrl" class="form-control" type="text" name="url" />
+        <button type="submit" class="btn btn-primary mb-0 mt-1">Pesquisar</button>
+    </div>
+</form>
+
+<br />
+@{
+    if (ViewBag.UrlValida != null && ViewBag.UrlValida)
+    {
+        <div class="card">
+            <div class="card-header">
+                <p class="lead mb-0">Lista de arquivos disponiveis</p>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm table-responsive table-bordered table-striped table-hover rounded-3 overflow-hidden ">
+                    <thead>
+                        <tr>
+                            <th scope="col"><p class="lead mb-0">Nome do arquivo</p></th>
+                            <th scope="col" width="100px"><p class="lead mb-0">#</p></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var dado in ViewBag.ListaArquivos)
+                        {
+                            <tr>
+                                <td>@dado.Nome</td>
+                                <td><a asp-action="Details" asp-route-url="@dado.Url" asp-route-acao="Download" style="height: 20px" class="">Baixar</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+}
