@@ -16,7 +16,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         //"DOTNET_GCHeapHardLimitPercent": "5",
-        "CONEXAO_BANCO": "Data Source=(localdb)\\mssqllocaldb;User ID=userAplication;Password=elian123;Connect Timeout=30;Encrypt=True;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False"
+        "CONEXAO_BANCO": "Data Source=(localdb)\\mssqllocaldb;User ID=userAplication;Password=elian123;Database=DatabaseTestes;Connect Timeout=30;"
       }
     },
     "IIS Express": {

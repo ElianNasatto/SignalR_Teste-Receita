@@ -6,12 +6,12 @@ namespace AplicationSignalR.Models
     public class ContribuinteReceitaFederalModel
     {
         public int id { get; set; }
-        public string CnpjBasico { get; set; }
-        public string RazaoSocial { get; set; }
-        public int NaturezaJuridica { get; set; }
-        public int QualificacaoResponsavel { get; set; }
-        public decimal CapitalSocial { get; set; }
-        public int PorteEmpresa { get; set; }
-        public string EnteFederativoResponsavel { get; set; }
+        public string Cnpj_Basico { get; set; }
+        public string Razao_Social { get; set; }
+        public int Natureza_Juridica { get; set; }
+        public int Qualificacao_Responsavel { get; set; }
+        public decimal Capital_Social { get; set; }
+        public int Porte_Empresa { get; set; }
+        public string Ente_Federativo_Responsavel { get; set; }
     }
 }

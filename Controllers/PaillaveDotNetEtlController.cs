@@ -82,13 +82,13 @@ namespace AplicationSignalR.Controllers
                 .CrossApplyZipFiles("extract files from zip", "*.EMPRECSV")
                 .CrossApplyTextFile("parse file", FlatFileDefinition.Create(i => new ContribuinteReceitaFederalModel
                 {
-                    CnpjBasico = i.ToColumn("cnpj_basico"),
-                    RazaoSocial = i.ToColumn("razao_social"),
-                    NaturezaJuridica = i.ToNumberColumn<int>("natureza_juridica", "."),
-                    QualificacaoResponsavel = i.ToNumberColumn<int>("qualificacao_responsavel", "."),
-                    CapitalSocial = i.ToNumberColumn<decimal>("capital_social", "."), // O "m" indica que é um literal decimal em C#
-                    PorteEmpresa = i.ToNumberColumn<int>("porte_empresa", "."),
-                    EnteFederativoResponsavel = i.ToColumn("ente_federativo_responsavel"),
+                    Cnpj_Basico = i.ToColumn("cnpj_basico"),
+                    Razao_Social = i.ToColumn("razao_social"),
+                    Natureza_Juridica = i.ToNumberColumn<int>("natureza_juridica", "."),
+                    Qualificacao_Responsavel = i.ToNumberColumn<int>("qualificacao_responsavel", "."),
+                    Capital_Social = i.ToNumberColumn<decimal>("capital_social", "."), // O "m" indica que é um literal decimal em C#
+                    Porte_Empresa = i.ToNumberColumn<int>("porte_empresa", "."),
+                    Ente_Federativo_Responsavel = i.ToColumn("ente_federativo_responsavel"),
                 })
                 .IsColumnSeparated(';'))
                 //.Distinct("exclude duplicates", i => i.CnpjBasico)
