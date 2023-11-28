@@ -1,16 +1,18 @@
-﻿<div class="col d-flex justify-content-center">
-    <div class="card" style="width: 50%;">
-        <div class="card-header">
-            <p class="lead mb-0">Baixando... </p>
-        </div>
-        <div class="card-body">
-            <div>
-                <p id="progressMessage">Mensagem</p>
+﻿<div style ="display:none;" id="divPanelProgress">
+    <div class="col d-flex justify-content-center">
+        <div class="card" style="width: 50%;">
+            <div class="card-header">
+                <p class="lead mb-0">Carregando... </p>
             </div>
-            <div id="progressPanel" style="visibility:hidden">
-                <div class="progress" style="height: 40px;">
-                    <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                        @* <span class="font-weight-bold" id="progressPercentage">0%</span> *@
+            <div class="card-body">
+                <div>
+                    <p id="progressMessage">Mensagem</p>
+                </div>
+                <div id="progressPanel">
+                    <div class="progress" style="height: 40px;">
+                        <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                            @* <span class="font-weight-bold" id="progressPercentage">0%</span> *@
+                        </div>
                     </div>
                 </div>
             </div>
@@ -24,12 +26,11 @@
 
     connectionProgressBar.on("SendProgressUpdate", function (message, percentComplete) {
         if (percentComplete >= 100) {
-            $("#progressPanel").css("visibility", "hidden");
+            $("#divPanelProgress").css("display", "none");
             MostrarAviso('Concluido');
         } else {
-            $("#progressPanel").css("visibility", "visible");
+            $("#divPanelProgress").css("display", "flex");
             $("#progressMessage").text(message);
-            // $("#progressPercentage").text(percentComplete + "%");
             $("#progressBar").css("width", percentComplete + "%");
             $("#progressBar").setAttribute("aria-valuenow", percentComplete + "%");
         }

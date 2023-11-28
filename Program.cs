@@ -1,3 +1,4 @@
+using AplicationSignalR.Hubs;
 using WebApplication3.BackgroundServices;
 using WebApplication3.Hubs;
 
@@ -21,7 +22,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
@@ -35,6 +36,7 @@ app.MapControllerRoute(
 
 app.MapControllers();
 app.MapHub<LogHub>("/loghub");
+app.MapHub<ChatHub>("/chathub");
 
 
 app.Run();

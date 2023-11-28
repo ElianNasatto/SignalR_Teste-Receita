@@ -6,6 +6,7 @@ namespace AplicationSignalR.Models
     public class ContribuinteReceitaFederalModel
     {
         public int id { get; set; }
+        [Column("Cnpj_Basico")]
         public string Cnpj_Basico { get; set; }
         public string Razao_Social { get; set; }
         public int Natureza_Juridica { get; set; }

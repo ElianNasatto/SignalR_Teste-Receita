@@ -1,8 +1,128 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+<style>
+    .card {
+        width: 100%;
+        border: none;
+        border-radius: 10px;
+    }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    .adiv {
+        background: #000000;
+        border-radius: 15px;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+        font-size: 14px;
+        height: 46px;
+    }
+
+    .chat {
+        border: none;
+        background: #d0d0d0;
+        font-size: 14px;
+        border-radius: 20px;
+    }
+
+    .bg-white {
+        border: 1px solid #E7E7E9;
+        font-size: 14px;
+        border-radius: 20px;
+    }
+
+    .dot {
+        font-weight: bold;
+    }
+
+    .form-control {
+        border-radius: 14px;
+        border: 1px solid #F0F0F0;
+        font-size: 14px;
+    }
+
+        .form-control:focus {
+            box-shadow: none;
+        }
+
+        .form-control::placeholder {
+            font-size: 14px;
+            color: #C4C4C4;
+        }
+
+</style>
+
+<button onclick="motrarNotificacoes('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam consectetur metus sollicitudin sapien porttitor, et gravida magna rhoncus. Praesent sodales risus vel turpis sodales rhoncus.')">Mostrar Notificação</button>
+
+<div class="container d-flex justify-content-center">
+    <div class="card mt-5">
+        <div class="d-flex flex-row justify-content-between p-3 adiv text-white">
+            <i class="fas fa-chevron-left"></i>
+            <span class="pb-3">Live chat</span>
+            <i class="fas fa-times"></i>
+        </div>
+
+        <div id="chatForm">
+        </div>
+
+        <div class="form-group px-3">
+            <textarea id="message" class="form-control" rows="5" placeholder="Type your message"></textarea>
+        </div>
+    </div>
 </div>
+
+
+
+
+<script>
+
+    var name = prompt('Enter your name:', '');
+
+    message.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault(); 
+            console.log("Enter pressionado!");
+        }
+    });
+
+    var connection = new signalR.HubConnectionBuilder().withUrl("/chathub", { transport: signalR.HttpTransportType.LongPolling }).withAutomaticReconnect().build();
+
+    connection.on('broadcastMessage', function (name, message) {
+        // Html encode display name and message.
+        var encodedName = name;
+        var encodedMsg = message;
+        // Add the message to the page.
+        var divBox = document.createElement('div');
+        divBox.className = "d-flex flex-row p-3";
+
+        var divMesage = document.createElement('div');
+        divMesage.className = "chat ml-2 p-3";
+        divMesage.innerHTML = '<strong>' + encodedName + '</strong>:&nbsp;&nbsp;' + encodedMsg;
+        divBox.appendChild(divMesage);
+
+        document.getElementById('chatForm').appendChild(divBox);
+
+    });
+
+    // Transport fallback functionality is now built into start.
+    connection.start()
+        .then(function () {
+            console.log('connection started');
+            document.getElementById('message').addEventListener('keydown', function (event) {
+                if (event.key === "Enter" && !event.shiftKey) {
+                    event.preventDefault();
+                    // Call the Send method on the hub.
+                    var messageInput = document.getElementById('message');
+
+                    connection.invoke('send', name, messageInput.value);
+
+                    // Clear text box and reset focus for next comment.
+                    messageInput.value = '';
+                    messageInput.focus();
+                    event.preventDefault();
+                }
+            });
+        })
+        .catch(error => {
+            console.error(error.message);
+        });
+</script>

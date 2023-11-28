@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/AplicationSignalR.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/AplicationSignalR.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" />
+
     <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js" asp-append-version="true"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -17,17 +20,97 @@
     <script src="~/lib/microsoft/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
     <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js" asp-append-version="true"></script>
 
+    <script>
+        var notificacoesLog = new Array();
+
+        function motrarNotificacoes(mensage) {
+            var notificationContainer = document.getElementById('notification-container');
+
+            // Cria uma nova notificação
+            var notification = document.createElement('div');
+            notification.className = 'toast custom-toast mb-1 border border-warning';
+            notification.setAttribute("role", "alert");
+            notification.setAttribute("aria-live", "assertive");
+            notification.innerHTML = `
+                    <div class="toast-header">
+                        <i class="bi bi-bell-fill"></i>
+                        <strong class=""> Aviso </strong>
+                    </div>
+                    <div class="toast-body">` + mensage + `</div>`;
+
+            // Adiciona a notificação ao contêiner
+            notificationContainer.appendChild(notification);
+
+            // Mostra a notificação usando o componente de Toast do Bootstrap
+            var toast = new bootstrap.Toast(notification);
+            toast.show();
+
+        }
+
+
+        var connectionNotificacoes = new signalR.HubConnectionBuilder().withUrl("/loghub", { transport: signalR.HttpTransportType.LongPolling }).withAutomaticReconnect().build();
+
+        var connectionNotificacoes = new signalR.HubConnectionBuilder().withUrl("/loghub", { transport: signalR.HttpTransportType.LongPolling }).withAutomaticReconnect().build();
+        connectionNotificacoes.on("EnviarLog", function (lista) {
+            if (Array.isArray(lista)) {
+                lista.map(notifi => motrarNotificacoes(notifi));
+            } else {
+                motrarNotificacoes(lista);
+            }
+        });
+
+        connectionNotificacoes.start().catch(function (err) {
+            return console.error(err.toString());
+        });
+
+    </script>
+
     <style>
-        .fontBootstrap {
+        body {
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             font-size: 14px;
             line-height: 1.5;
+        }
+
+        .notification {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .notification {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 5px;
+            opacity: 0;
+            transform: translateY(100%);
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: flex-end;
+        }
+
+        .show {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Aplication SignalR</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -41,13 +124,13 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li> 
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Log" asp-action="Index">Monitor de Logs</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Download" asp-action="Index">Download arquivos</a>
-                        </li> 
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="PaillaveDotNetEtl" asp-action="Index">Paillevel ETL</a>
                         </li>
@@ -56,6 +139,7 @@
             </div>
         </nav>
     </header>
+
     <div class="container">
         <component type="typeof(AvisoPanel)" render-mode="ServerPrerendered" />
         <main role="main" class="pb-3">
@@ -63,9 +147,13 @@
         </main>
     </div>
 
+    <div class="notification-container" id="notification-container">
+    </div>
+
+
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2020 - FEESC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2023 - ELIAN - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     @await RenderSectionAsync("Scripts", required: false)
