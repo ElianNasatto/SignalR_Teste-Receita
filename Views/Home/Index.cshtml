@@ -75,19 +75,15 @@
 
 <script>
 
-    var name = prompt('Enter your name:', '');
-
-    message.addEventListener("keydown", function (event) {
-        if (event.key === "Enter" && !event.shiftKey) {
-            event.preventDefault(); 
-            console.log("Enter pressionado!");
-        }
-    });
+    var name = prompt('Digite seu nome:e', '');
 
     var connection = new signalR.HubConnectionBuilder().withUrl("/chathub", { transport: signalR.HttpTransportType.LongPolling }).withAutomaticReconnect().build();
 
     connection.on('broadcastMessage', function (name, message) {
         // Html encode display name and message.
+        if ((Notification.permission == 'granted')&& (document.visibilityState == 'hidden')) {
+            new Notification('Nova mensagem recebida', { body: name + '  - ' + message });
+        }
         var encodedName = name;
         var encodedMsg = message;
         // Add the message to the page.
@@ -106,7 +102,6 @@
     // Transport fallback functionality is now built into start.
     connection.start()
         .then(function () {
-            console.log('connection started');
             document.getElementById('message').addEventListener('keydown', function (event) {
                 if (event.key === "Enter" && !event.shiftKey) {
                     event.preventDefault();

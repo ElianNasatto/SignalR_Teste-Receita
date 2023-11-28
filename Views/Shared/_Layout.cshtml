@@ -21,9 +21,20 @@
     <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js" asp-append-version="true"></script>
 
     <script>
+
+        if (Notification.permission == 'denied')
+        {
+            Notification.requestPermission();
+        }
+
         var notificacoesLog = new Array();
 
         function motrarNotificacoes(mensage) {
+
+            if ((Notification.permission == 'granted') && (document.visibilityState == 'hidden')) 
+            {
+                new Notification('Aviso', { body: mensage });
+            }
             var notificationContainer = document.getElementById('notification-container');
 
             // Cria uma nova notificação
@@ -32,11 +43,11 @@
             notification.setAttribute("role", "alert");
             notification.setAttribute("aria-live", "assertive");
             notification.innerHTML = `
-                    <div class="toast-header">
-                        <i class="bi bi-bell-fill"></i>
-                        <strong class=""> Aviso </strong>
-                    </div>
-                    <div class="toast-body">` + mensage + `</div>`;
+                                                            <div class="toast-header">
+                                                                <i class="bi bi-bell-fill"></i>
+                                                                <strong class=""> Aviso </strong>
+                                                            </div>
+                                                            <div class="toast-body">` + mensage + `</div>`;
 
             // Adiciona a notificação ao contêiner
             notificationContainer.appendChild(notification);
