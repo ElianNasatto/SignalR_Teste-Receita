@@ -1,14 +1,14 @@
 ﻿using AplicationSignalR.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using Paillave.Etl.Core;
 using Paillave.Etl.FileSystem;
-using Paillave.Etl.TextFile;
-using Paillave.Etl.Zip;
 using Paillave.Etl.SqlServer;
 using Microsoft.AspNetCore.SignalR;
 using WebApplication3.Hubs.Clients;
 using WebApplication3.Hubs;
+using System.Data.SqlClient;
+using Paillave.Etl.Zip;
+using Paillave.Etl.TextFile;
 
 namespace AplicationSignalR.Controllers
 {

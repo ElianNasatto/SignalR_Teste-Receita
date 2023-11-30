@@ -75,8 +75,6 @@
 
 <script>
 
-    var name = prompt('Digite seu nome:e', '');
-
     var connection = new signalR.HubConnectionBuilder().withUrl("/chathub", { transport: signalR.HttpTransportType.LongPolling }).withAutomaticReconnect().build();
 
     connection.on('broadcastMessage', function (name, message) {
@@ -108,7 +106,7 @@
                     // Call the Send method on the hub.
                     var messageInput = document.getElementById('message');
 
-                    connection.invoke('send', name, messageInput.value);
+                    connection.invoke('send', messageInput.value);
 
                     // Clear text box and reset focus for next comment.
                     messageInput.value = '';

@@ -1,16 +1,38 @@
 using AplicationSignalR.Hubs;
+using AplicationSignalR.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.IdentityModel.Tokens;
+using System.Data;
+using System.Data.SqlClient;
+using System.Net;
+using System.Text;
 using WebApplication3.BackgroundServices;
 using WebApplication3.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.WebHost.UseKestrel();
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(config =>
+{
+    var policy = new AuthorizationPolicyBuilder()
+                        .RequireAuthenticatedUser()
+                        .Build();
+    config.Filters.Add(new AuthorizeFilter(policy));
+});
 builder.Services.AddSignalR();
 
+builder.Services.AddTransient<IDbConnection>((s) => { return new SqlConnection(builder.Configuration.GetValue<string>("CONEXAO_BANCO")); });
 //BackgroundService
 builder.Services.AddHostedService<FileReader>();
 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+               .AddCookie(options =>
+               {
+                   options.LoginPath = "/login";
+               });
 
 var app = builder.Build();
 
@@ -27,6 +49,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 app.UseCors();
 
@@ -37,6 +60,5 @@ app.MapControllerRoute(
 app.MapControllers();
 app.MapHub<LogHub>("/loghub");
 app.MapHub<ChatHub>("/chathub");
-
 
 app.Run();
